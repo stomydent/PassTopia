@@ -1,7 +1,8 @@
-from dotenv import load_dotenv
-from wx.core import EmptyString
-from ui.gui import mainWindow,dlgAbout
-from ctypes import windll
+from dotenv  import load_dotenv
+from wx.core import EmptyString, Font
+from ui.gui  import mainWindow,dlgAbout
+from ctypes  import windll
+from secrets import choice
 import os, wx, string
 
 load_dotenv('./config/.env')
@@ -21,7 +22,12 @@ class MainWindow(mainWindow):
         DLGAbout(self)
 
     def btnGenPass_Click( self, event ):
+        #Get generation boundaries
         dict = ""
+        passLength = self.slideLength.GetValue()
+        passCount  = self.slideCount.GetValue()
+
+        #Validation
         if self.chkAlphabetMinor.IsChecked()==True:
             dict += string.ascii_lowercase
         if self.chkAlphabetCapital.IsChecked()==True:
@@ -30,8 +36,17 @@ class MainWindow(mainWindow):
             dict += string.digits
         if self.chkAlphabetSpecial.IsChecked()==True:
             dict += string.punctuation
-        
-        if not dict: windll.user32.MessageBoxW(0, "Dictionary cannot be empty", f"{os.getenv('APPNAME')}", 0 )
+        if        not dict: windll.user32.MessageBoxW(0, "Dictionary cannot be empty", f"{os.getenv('APPNAME')}", 0 )
+        if passLength <= 0: windll.user32.MessageBoxW(0, f"Password length cannot be <= {passLength}", f"{os.getenv('APPNAME')}", 0 )
+        if passLength >100: windll.user32.MessageBoxW(0, f"Password length cannot be  > {passLength}", f"{os.getenv('APPNAME')}", 0 )
+        if passCount  <= 0: windll.user32.MessageBoxW(0, f"Password  count cannot be <= {passCount}", f"{os.getenv('APPNAME')}", 0 ) 
+        if passCount   >50: windll.user32.MessageBoxW(0, f"Password  count cannot be  > {passCount}", f"{os.getenv('APPNAME')}", 0 ) 
+
+        #Generation
+        passBuffer = []
+        for i in range(passCount): passBuffer.append(''.join([choice(dict) for _ in range(passLength)]))
+        self.m_textCtrl1.SetFont(Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, underline=False, faceName="Terminal", encoding=wx.FONTENCODING_DEFAULT))
+        self.m_textCtrl1.Value = '\n'.join(passBuffer)
 
 
 class DLGAbout(dlgAbout):

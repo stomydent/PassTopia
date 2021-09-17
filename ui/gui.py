@@ -44,37 +44,35 @@ class mainWindow ( wx.Frame ):
 		vSizer.SetMinSize( wx.Size( 800,600 ) )
 		self.m_auinotebook = wx.aui.AuiNotebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.aui.AUI_NB_TOP )
 		self.pPassword = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
-		flexGridPassword = wx.FlexGridSizer( 3, 6, 20, 0 )
-		flexGridPassword.AddGrowableCol( 5 )
+		flexGridPassword = wx.FlexGridSizer( 6, 1, 0, 0 )
+		flexGridPassword.AddGrowableCol( 0 )
 		flexGridPassword.AddGrowableRow( 1 )
-		flexGridPassword.SetFlexibleDirection( wx.HORIZONTAL )
+		flexGridPassword.AddGrowableRow( 2 )
+		flexGridPassword.AddGrowableRow( 3 )
+		flexGridPassword.AddGrowableRow( 4 )
+		flexGridPassword.AddGrowableRow( 5 )
+		flexGridPassword.SetFlexibleDirection( wx.BOTH )
 		flexGridPassword.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
-
-		flexGridPassword.Add( ( 20, 0), 5, wx.EXPAND, 5 )
-
-		bSizer7 = wx.BoxSizer( wx.VERTICAL )
-
-
-		bSizer7.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+		bSizer7 = wx.BoxSizer( wx.HORIZONTAL )
 
 		lblAlphabet = wx.StaticBoxSizer( wx.StaticBox( self.pPassword, wx.ID_ANY, u"Alphabet" ), wx.HORIZONTAL )
 
 		self.chkAlphabetMinor = wx.CheckBox( lblAlphabet.GetStaticBox(), wx.ID_ANY, u"a-z", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.chkAlphabetMinor.SetValue(True)
-		lblAlphabet.Add( self.chkAlphabetMinor, 0, wx.ALL, 5 )
+		lblAlphabet.Add( self.chkAlphabetMinor, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 		self.chkAlphabetCapital = wx.CheckBox( lblAlphabet.GetStaticBox(), wx.ID_ANY, u"A-Z", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.chkAlphabetCapital.SetValue(True)
-		lblAlphabet.Add( self.chkAlphabetCapital, 0, wx.ALL, 5 )
+		lblAlphabet.Add( self.chkAlphabetCapital, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 		self.chkAlphabetNumbers = wx.CheckBox( lblAlphabet.GetStaticBox(), wx.ID_ANY, u"0-9", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.chkAlphabetNumbers.SetValue(True)
-		lblAlphabet.Add( self.chkAlphabetNumbers, 0, wx.ALL, 5 )
+		lblAlphabet.Add( self.chkAlphabetNumbers, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 		self.chkAlphabetSpecial = wx.CheckBox( lblAlphabet.GetStaticBox(), wx.ID_ANY, u"!@#$", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.chkAlphabetSpecial.SetValue(True)
-		lblAlphabet.Add( self.chkAlphabetSpecial, 0, wx.ALL, 5 )
+		lblAlphabet.Add( self.chkAlphabetSpecial, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 
 		bSizer7.Add( lblAlphabet, 5, wx.EXPAND, 5 )
@@ -105,21 +103,10 @@ class mainWindow ( wx.Frame ):
 		bSizer7.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		self.btnGenPass = wx.Button( self.pPassword, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer7.Add( self.btnGenPass, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		bSizer7.Add( self.btnGenPass, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 
-		flexGridPassword.Add( bSizer7, 5, wx.EXPAND, 5 )
-
-
-		flexGridPassword.Add( ( 20, 0), 5, wx.EXPAND, 5 )
-
-		bSizer81 = wx.BoxSizer( wx.VERTICAL )
-
-
-		flexGridPassword.Add( bSizer81, 1, wx.EXPAND, 5 )
-
-
-		flexGridPassword.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+		flexGridPassword.Add( bSizer7, 5, wx.ALL|wx.EXPAND, 5 )
 
 		bSizer71 = wx.BoxSizer( wx.VERTICAL )
 
@@ -132,7 +119,7 @@ class mainWindow ( wx.Frame ):
 		bSizer71.Add( sbSizer7, 1, wx.EXPAND, 5 )
 
 
-		flexGridPassword.Add( bSizer71, 10, wx.ALIGN_LEFT|wx.ALL|wx.EXPAND, 5 )
+		flexGridPassword.Add( bSizer71, 10, wx.ALL|wx.EXPAND, 5 )
 
 
 		self.pPassword.SetSizer( flexGridPassword )
