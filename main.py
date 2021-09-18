@@ -9,26 +9,32 @@ import lib.genbtc, lib.geneth
 
 load_dotenv('./config/.env')
 
-gpg_customhome = bool(int(os.getenv('GPG_CUSTOMHOME')))
+gpg_customhome = os.getenv('GPG_HOME')
 gpg_home       = ''
 
-found = False
-if found == False and os.path.isdir(os.environ['USERPROFILE']):
-    brk = False
-    for root, dirs, files in os.walk(os.environ['USERPROFILE']):
-        if brk == True: break
-        for name in dirs:
-            if name == '.gnupg':
-                brk   = True
-                found = True
-                gpg_home = os.environ['USERPROFILE']+'\.gnupg'
-                break
-            if name == 'gnupg':
-                brk   = True
-                found = True
-                gpg_home = os.environ['USERPROFILE']+'\gnupg'
-                break
+if gpg_customhome == 'default':
+    found = False
+    if found == False and os.path.isdir(os.environ['USERPROFILE']):
+        brk = False
+        for root, dirs, files in os.walk(os.environ['USERPROFILE']):
+            if brk == True: break
+            for name in dirs:
+                if name == '.gnupg':
+                    brk   = True
+                    found = True
+                    gpg_home = os.environ['USERPROFILE']+'\.gnupg'
+                    break
+                if name == 'gnupg':
+                    brk   = True
+                    found = True
+                    gpg_home = os.environ['USERPROFILE']+'\gnupg'
+                    break
 
+if gpg_customhome != 'default':
+    gpg_home = os.getenv('GPG_HOME')
+
+
+print(gpg_home)
 gpg = gnupg.GPG(gnupghome=gpg_home)
 
 
