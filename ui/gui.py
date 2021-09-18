@@ -125,7 +125,7 @@ class mainWindow ( wx.Frame ):
 		self.pPassword.SetSizer( flexGridPassword )
 		self.pPassword.Layout()
 		flexGridPassword.Fit( self.pPassword )
-		self.m_auinotebook.AddPage( self.pPassword, u"Password", True, wx.Bitmap( u"ui/icons/password.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook.AddPage( self.pPassword, u"Password", False, wx.Bitmap( u"ui/icons/password.png", wx.BITMAP_TYPE_ANY ) )
 		self.pCertificate = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		flexGridCertificate = wx.FlexGridSizer( 10, 5, 5, 20 )
 		flexGridCertificate.AddGrowableCol( 1 )
@@ -344,7 +344,7 @@ class mainWindow ( wx.Frame ):
 		self.m_panel5.SetSizer( bSizer1411 )
 		self.m_panel5.Layout()
 		bSizer1411.Fit( self.m_panel5 )
-		self.m_auinotebook2.AddPage( self.m_panel5, u"Ethereum", True, wx.Bitmap( u"ui/icons/ethereum.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook2.AddPage( self.m_panel5, u"Ethereum", False, wx.Bitmap( u"ui/icons/ethereum.png", wx.BITMAP_TYPE_ANY ) )
 
 		bSizer8.Add( self.m_auinotebook2, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -352,7 +352,7 @@ class mainWindow ( wx.Frame ):
 		self.pWallet.SetSizer( bSizer8 )
 		self.pWallet.Layout()
 		bSizer8.Fit( self.pWallet )
-		self.m_auinotebook.AddPage( self.pWallet, u"Wallet", False, wx.Bitmap( u"ui/icons/wallet.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook.AddPage( self.pWallet, u"Wallet", True, wx.Bitmap( u"ui/icons/wallet.png", wx.BITMAP_TYPE_ANY ) )
 
 		vSizer.Add( self.m_auinotebook, 1, wx.ALL|wx.EXPAND, 5 )
 

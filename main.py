@@ -63,6 +63,40 @@ class MainWindow(mainWindow):
         self.txtETHPubKey.Value = lib.geneth.EthereumWallet.generate_address(private_key)
         self.txtETHPrivateKey.Value = private_key
 
+    def btnBTCSave_Click( self, event ):
+        if (self.txtBTCPublicKey.GetValue() == EmptyString) or (self.txtBTCPrivateKey.GetValue() == EmptyString):
+            windll.user32.MessageBoxW(0, "You must generate your wallet before saving it", f"{os.getenv('APPNAME')}", 0 ) 
+            return
+        dlgFileSave = wx.FileDialog(self,
+                                'Save File',
+                                "", "",
+                                'All files (*.*)|*.*',
+                                wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+        if dlgFileSave.ShowModal() == wx.ID_CANCEL:
+            return
+        file = open(dlgFileSave.GetPath(),'w')
+        file.write('Public  Key: ' + self.txtBTCPublicKey.GetValue() + '\n')
+        file.write('Private Key: ' + self.txtBTCPrivateKey.GetValue() + '\n')
+        file.close()
+        windll.user32.MessageBoxW(0, "File saved successfully", f"{os.getenv('APPNAME')}", 0 ) 
+
+    def btnETHSave_Click( self, event ):
+        if (self.txtETHPubKey.GetValue() == EmptyString) or (self.txtETHPrivateKey.GetValue() == EmptyString):
+            windll.user32.MessageBoxW(0, "You must generate your wallet before saving it", f"{os.getenv('APPNAME')}", 0 ) 
+            return
+        dlgFileSave = wx.FileDialog(self,
+                                'Save File',
+                                "", "",
+                                'All files (*.*)|*.*',
+                                wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+        if dlgFileSave.ShowModal() == wx.ID_CANCEL:
+            return
+        file = open(dlgFileSave.GetPath(),'w')
+        file.write('Public  Key: ' + self.txtETHPubKey.GetValue() + '\n')
+        file.write('Private Key: 0x' + self.txtETHPrivateKey.GetValue() + '\n')
+        file.close()
+        windll.user32.MessageBoxW(0, "File saved successfully", f"{os.getenv('APPNAME')}", 0 ) 
+
 class DLGAbout(dlgAbout):
     def __init__(self, parent):
         super().__init__(parent)
