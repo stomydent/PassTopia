@@ -176,13 +176,13 @@ class mainWindow ( wx.Frame ):
 
 		lblExpiresChoices = [ u"Never", u"Custom" ]
 		self.lblExpires = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Expires", wx.DefaultPosition, wx.DefaultSize, lblExpiresChoices, 1, wx.RA_SPECIFY_COLS )
-		self.lblExpires.SetSelection( 1 )
+		self.lblExpires.SetSelection( 0 )
 		bSizer11.Add( self.lblExpires, 2, wx.EXPAND, 5 )
 
 		lblCustomExpires = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Custom expiry string" ), wx.VERTICAL )
 
-		self.txtTimeQuanity = wx.TextCtrl( lblCustomExpires.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblCustomExpires.Add( self.txtTimeQuanity, 0, wx.ALL|wx.EXPAND, 5 )
+		self.txtTimeQuantity = wx.TextCtrl( lblCustomExpires.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		lblCustomExpires.Add( self.txtTimeQuantity, 0, wx.ALL|wx.EXPAND, 5 )
 
 
 		bSizer11.Add( lblCustomExpires, 2, wx.EXPAND, 5 )
@@ -256,7 +256,7 @@ class mainWindow ( wx.Frame ):
 		self.pCertificate.SetSizer( flexGridCertificate )
 		self.pCertificate.Layout()
 		flexGridCertificate.Fit( self.pCertificate )
-		self.m_auinotebook.AddPage( self.pCertificate, u"GPG Keypair", False, wx.Bitmap( u"ui/icons/keys.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook.AddPage( self.pCertificate, u"GPG Keypair", True, wx.Bitmap( u"ui/icons/keys.png", wx.BITMAP_TYPE_ANY ) )
 		self.pWallet = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		bSizer8 = wx.BoxSizer( wx.VERTICAL )
 
@@ -352,7 +352,7 @@ class mainWindow ( wx.Frame ):
 		self.pWallet.SetSizer( bSizer8 )
 		self.pWallet.Layout()
 		bSizer8.Fit( self.pWallet )
-		self.m_auinotebook.AddPage( self.pWallet, u"Wallet", True, wx.Bitmap( u"ui/icons/wallet.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook.AddPage( self.pWallet, u"Wallet", False, wx.Bitmap( u"ui/icons/wallet.png", wx.BITMAP_TYPE_ANY ) )
 
 		vSizer.Add( self.m_auinotebook, 1, wx.ALL|wx.EXPAND, 5 )
 

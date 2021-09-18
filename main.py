@@ -3,10 +3,35 @@ from wx.core import EmptyString, Font
 from ui.gui  import mainWindow,dlgAbout
 from ctypes  import windll
 from secrets import choice,randbits
-import os, wx, string
+from sys     import platform
+import os, wx, string, gnupg
 import lib.genbtc, lib.geneth
 
 load_dotenv('./config/.env')
+
+gpg_customhome = bool(int(os.getenv('GPG_CUSTOMHOME')))
+gpg_home       = ''
+
+found = False
+if found == False and os.path.isdir(os.environ['USERPROFILE']):
+    brk = False
+    for root, dirs, files in os.walk(os.environ['USERPROFILE']):
+        if brk == True: break
+        for name in dirs:
+            if name == '.gnupg':
+                brk   = True
+                found = True
+                gpg_home = os.environ['USERPROFILE']+'\.gnupg'
+                break
+            if name == 'gnupg':
+                brk   = True
+                found = True
+                gpg_home = os.environ['USERPROFILE']+'\gnupg'
+                break
+
+gpg = gnupg.GPG(gnupghome=gpg_home)
+
+
 
 class MainWindow(mainWindow):
     def __init__(self, *args, **kw):
@@ -15,6 +40,14 @@ class MainWindow(mainWindow):
         icon = wx.Icon(f"{os.getcwd()}{os.getenv('APPICON')}", wx.BITMAP_TYPE_PNG)
         self.SetIcon(icon)
         self.SetTitle(os.getenv('APPNAME'))
+
+        #Set GPG keypair expiry to Never as default
+        self.lblExpires.Selection = 0
+        if (self.lblExpires.Selection == 0): 
+            self.txtTimeQuantity.Enabled = False
+        else:
+
+            self.txtTimeQuantity.Enabled = True
 
     def AppExit(self, event):
         self.Destroy()
@@ -96,6 +129,15 @@ class MainWindow(mainWindow):
         file.write('Private Key: 0x' + self.txtETHPrivateKey.GetValue() + '\n')
         file.close()
         windll.user32.MessageBoxW(0, "File saved successfully", f"{os.getenv('APPNAME')}", 0 ) 
+
+    def radioGPGExpiry_Click( self, event ):
+        if self.lblExpires.Selection == 1: self.txtTimeQuantity.Enabled = True
+        if self.lblExpires.Selection == 0: self.txtTimeQuantity.Enabled = False
+
+    def btnGPGGen_Click( self, event ):
+        pss_keytype = self.radioKeyType.GetStringSelection()
+        print(pss_keytype)
+
 
 class DLGAbout(dlgAbout):
     def __init__(self, parent):
