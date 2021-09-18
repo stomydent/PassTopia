@@ -275,16 +275,16 @@ class mainWindow ( wx.Frame ):
 
 		lblBTCPubKey = wx.StaticBoxSizer( wx.StaticBox( self.m_panel4, wx.ID_ANY, u"Address" ), wx.VERTICAL )
 
-		self.txtPublicKey = wx.TextCtrl( lblBTCPubKey.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblBTCPubKey.Add( self.txtPublicKey, 0, wx.EXPAND, 5 )
+		self.txtBTCPublicKey = wx.TextCtrl( lblBTCPubKey.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		lblBTCPubKey.Add( self.txtBTCPublicKey, 0, wx.EXPAND, 5 )
 
 
 		bSizer141.Add( lblBTCPubKey, 1, wx.ALL|wx.EXPAND, 5 )
 
 		lblBTCPrivateKey = wx.StaticBoxSizer( wx.StaticBox( self.m_panel4, wx.ID_ANY, u"Private key" ), wx.VERTICAL )
 
-		self.txtPublicKey1 = wx.TextCtrl( lblBTCPrivateKey.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblBTCPrivateKey.Add( self.txtPublicKey1, 0, wx.EXPAND, 5 )
+		self.txtBTCPrivateKey = wx.TextCtrl( lblBTCPrivateKey.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		lblBTCPrivateKey.Add( self.txtBTCPrivateKey, 0, wx.EXPAND, 5 )
 
 
 		bSizer141.Add( lblBTCPrivateKey, 1, wx.ALL|wx.EXPAND, 5 )

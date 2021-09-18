@@ -2,8 +2,9 @@ from dotenv  import load_dotenv
 from wx.core import EmptyString, Font
 from ui.gui  import mainWindow,dlgAbout
 from ctypes  import windll
-from secrets import choice
+from secrets import choice,randbits
 import os, wx, string
+import lib.genbtc 
 
 load_dotenv('./config/.env')
 
@@ -48,6 +49,12 @@ class MainWindow(mainWindow):
         self.m_textCtrl1.SetFont(Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, underline=False, faceName="Terminal", encoding=wx.FONTENCODING_DEFAULT))
         self.m_textCtrl1.Value = '\n'.join(passBuffer)
 
+    def btnBTCGen_Click( self, event ):
+        bits = randbits(256)
+        bits_hex = hex(bits)
+        private_key = bits_hex[2:] 
+        self.txtBTCPublicKey.Value  = lib.genbtc.BitcoinWallet.generate_address(private_key)
+        self.txtBTCPrivateKey.Value = lib.genbtc.BitcoinWallet.private_to_wif(private_key)
 
 class DLGAbout(dlgAbout):
     def __init__(self, parent):
