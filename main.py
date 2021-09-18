@@ -33,8 +33,6 @@ if gpg_customhome == 'default':
 if gpg_customhome != 'default':
     gpg_home = os.getenv('GPG_HOME')
 
-
-print(gpg_home)
 gpg = gnupg.GPG(gnupghome=gpg_home)
 
 
@@ -141,9 +139,39 @@ class MainWindow(mainWindow):
         if self.lblExpires.Selection == 0: self.txtTimeQuantity.Enabled = False
 
     def btnGPGGen_Click( self, event ):
-        pss_keytype = self.radioKeyType.GetStringSelection()
-        print(pss_keytype)
+        expiry = 0 if self.lblExpires.GetSelection() == 0 else self.txtTimeQuantity.Value
+        comment = self.txtComment.Value
 
+        if expiry == EmptyString: expiry = 0
+
+        if self.txtPassphrase.Value != self.txtConfirm.Value: 
+            windll.user32.MessageBoxW(0, "Passphrase does not match confirmation", f"{os.getenv('APPNAME')}", 0 ) 
+            return
+        if self.txtPassphrase.Value == EmptyString and self.txtConfirm.Value == EmptyString:
+            windll.user32.MessageBoxW(0, "Empty passphrase field", f"{os.getenv('APPNAME')}", 0 )
+            return
+        if self.txtEmail.Value == EmptyString:
+            windll.user32.MessageBoxW(0, "Empty email field", f"{os.getenv('APPNAME')}", 0 )
+            return
+        if self.txtRealName.Value == EmptyString:
+            windll.user32.MessageBoxW(0, "Empty name field", f"{os.getenv('APPNAME')}", 0 )
+            return
+        if comment == EmptyString: comment = f"Generated with GNUPG/{os.getenv('APPNAME')}" 
+
+        input_data = gpg.gen_key_input(
+            key_type      = self.radioKeyType.GetStringSelection(),
+            key_length    = int(self.radioKeySize.GetStringSelection()),
+            # subkey_type   = "RSA",
+            # subkey_length = int(self.radioKeySize.GetStringSelection()),
+            # subkey_usage  = "encrypt,sign,auth",
+            name_real     = self.txtRealName.Value,
+            name_email    = self.txtEmail.Value,
+            name_comment  = comment,
+            expire_date   = expiry,
+            passphrase    = self.txtPassphrase.Value
+        )
+        print(input_data)
+        return
 
 class DLGAbout(dlgAbout):
     def __init__(self, parent):

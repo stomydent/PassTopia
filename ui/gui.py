@@ -24,14 +24,14 @@ class mainWindow ( wx.Frame ):
 
 		self.mainMenu = wx.MenuBar( 0 )
 		self.menuFile = wx.Menu()
-		self.mQuit = wx.MenuItem( self.menuFile, wx.ID_ANY, u"Quit"+ u"\t" + u"Q", wx.EmptyString, wx.ITEM_NORMAL )
+		self.mQuit = wx.MenuItem( self.menuFile, wx.ID_ANY, u"Quit", wx.EmptyString, wx.ITEM_NORMAL )
 		self.mQuit.SetBitmap( wx.Bitmap( u"ui/icons/exit.png", wx.BITMAP_TYPE_ANY ) )
 		self.menuFile.Append( self.mQuit )
 
 		self.mainMenu.Append( self.menuFile, u"File" )
 
 		self.menuHelp = wx.Menu()
-		self.mAbout = wx.MenuItem( self.menuHelp, wx.ID_ANY, u"About"+ u"\t" + u"A", wx.EmptyString, wx.ITEM_NORMAL )
+		self.mAbout = wx.MenuItem( self.menuHelp, wx.ID_ANY, u"About", wx.EmptyString, wx.ITEM_NORMAL )
 		self.mAbout.SetBitmap( wx.Bitmap( u"ui/icons/info.png", wx.BITMAP_TYPE_ANY ) )
 		self.menuHelp.Append( self.mAbout )
 
@@ -143,8 +143,8 @@ class mainWindow ( wx.Frame ):
 
 		bSizer10 = wx.BoxSizer( wx.HORIZONTAL )
 
-		radioKeyTypeChoices = [ u"RSA and DSA", u"DSA and ElGamal", u"DSA (sign only)", u"RSA (sign only)" ]
-		self.radioKeyType = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Key Type", wx.DefaultPosition, wx.DefaultSize, radioKeyTypeChoices, 2, wx.RA_SPECIFY_COLS )
+		radioKeyTypeChoices = [ u"RSA", u"DSA", u"ELG", u"ECC", u"EDDSA", u"ECDH", u"ECDSA", u"ECDH" ]
+		self.radioKeyType = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Key Type", wx.DefaultPosition, wx.DefaultSize, radioKeyTypeChoices, 4, wx.RA_SPECIFY_COLS )
 		self.radioKeyType.SetSelection( 0 )
 		bSizer10.Add( self.radioKeyType, 1, wx.EXPAND, 5 )
 
@@ -192,8 +192,8 @@ class mainWindow ( wx.Frame ):
 
 		lblComment = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Comment" ), wx.VERTICAL )
 
-		self.txtEmail1 = wx.TextCtrl( lblComment.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblComment.Add( self.txtEmail1, 0, wx.ALL|wx.EXPAND, 5 )
+		self.txtComment = wx.TextCtrl( lblComment.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		lblComment.Add( self.txtComment, 0, wx.ALL|wx.EXPAND, 5 )
 
 
 		bSizer9.Add( lblComment, 1, wx.EXPAND, 5 )
