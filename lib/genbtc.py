@@ -83,6 +83,18 @@ class BitcoinWallet:
         WIF = base58(PK4)
         return WIF
 
+    @staticmethod
+    def private_to_wif_compressed(private_key):
+        PK0 = str(private_key)
+        PK1 = '80'+ PK0 + '01'
+        PK2 = hashlib.sha256(codecs.decode(PK1, 'hex'))
+        PK3 = hashlib.sha256(PK2.digest())
+        checksum = codecs.encode(PK3.digest(), 'hex')[0:8]
+        PK4 = PK1 + str(checksum)[2:10]
+        WIF = base58(PK4)
+        return WIF
+
+
 def base58(address_hex):
     alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
     b58_string = ''

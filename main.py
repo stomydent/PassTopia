@@ -4,7 +4,7 @@ from ui.gui  import mainWindow,dlgAbout
 from ctypes  import windll
 from secrets import choice,randbits
 import os, wx, string
-import lib.genbtc 
+import lib.genbtc, lib.geneth
 
 load_dotenv('./config/.env')
 
@@ -53,8 +53,15 @@ class MainWindow(mainWindow):
         bits = randbits(256)
         bits_hex = hex(bits)
         private_key = bits_hex[2:] 
-        self.txtBTCPublicKey.Value  = lib.genbtc.BitcoinWallet.generate_address(private_key)
-        self.txtBTCPrivateKey.Value = lib.genbtc.BitcoinWallet.private_to_wif(private_key)
+        self.txtBTCPublicKey.Value  = lib.genbtc.BitcoinWallet.generate_compressed_address(private_key)
+        self.txtBTCPrivateKey.Value = lib.genbtc.BitcoinWallet.private_to_wif_compressed(private_key)
+
+    def btnETHGen_Click(self, event):
+        bits = randbits(256)
+        bits_hex = hex(bits)
+        private_key = bits_hex[2:] 
+        self.txtETHPubKey.Value = lib.geneth.EthereumWallet.generate_address(private_key)
+        self.txtETHPrivateKey.Value = private_key
 
 class DLGAbout(dlgAbout):
     def __init__(self, parent):
