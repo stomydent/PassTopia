@@ -1,6 +1,11 @@
 .git
 .vscode
-.bak
+*.bak
+*.spec
+*.fbp
+*.exe
 /lib/__pycache__
 /ui/__pycache__
-passtopia.fbp
+/__pycache__
+/build
+/dist
