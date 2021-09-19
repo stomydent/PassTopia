@@ -1,5 +1,6 @@
 .git
 .vscode
+.bak
 /lib/__pycache__
 /ui/__pycache__
 passtopia.fbp

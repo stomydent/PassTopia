@@ -1,40 +1,26 @@
-from dotenv  import load_dotenv
-from wx.core import EmptyString, Font
-from ui.gui  import mainWindow,dlgAbout
-from ctypes  import windll
-from secrets import choice,randbits
-from sys     import platform
-import os, wx, string, gnupg
+from dotenv            import load_dotenv, main
+from wx.core           import ICON_QUESTION, EmptyString, Font
+from ui.gui            import mainWindow,dlgAbout
+from ctypes            import windll
+from secrets           import choice,randbits
+from sys               import platform
+from Crypto.PublicKey  import RSA, DSA, ECC
+import os, wx, string
 import lib.genbtc, lib.geneth
 
 load_dotenv('./config/.env')
 
-gpg_customhome = os.getenv('GPG_HOME')
-gpg_home       = ''
-
-if gpg_customhome == 'default':
-    found = False
-    if found == False and os.path.isdir(os.environ['USERPROFILE']):
-        brk = False
-        for root, dirs, files in os.walk(os.environ['USERPROFILE']):
-            if brk == True: break
-            for name in dirs:
-                if name == '.gnupg':
-                    brk   = True
-                    found = True
-                    gpg_home = os.environ['USERPROFILE']+'\.gnupg'
-                    break
-                if name == 'gnupg':
-                    brk   = True
-                    found = True
-                    gpg_home = os.environ['USERPROFILE']+'\gnupg'
-                    break
-
-if gpg_customhome != 'default':
-    gpg_home = os.getenv('GPG_HOME')
-
-gpg = gnupg.GPG(gnupghome=gpg_home)
-
+MB_OK       = 0x0
+MB_OKCXL    = 0x01
+MB_YESNOCXL = 0x03
+MB_YESNO    = 0x04
+MB_HELP     = 0x4000
+ICON_EXLAIM = 0x30
+ICON_INFO   = 0x40
+ICON_STOP   = 0x10
+IDYES = 6
+IDNO = 7
+IDCANCEL = 2
 
 
 class MainWindow(mainWindow):
@@ -44,14 +30,6 @@ class MainWindow(mainWindow):
         icon = wx.Icon(f"{os.getcwd()}{os.getenv('APPICON')}", wx.BITMAP_TYPE_PNG)
         self.SetIcon(icon)
         self.SetTitle(os.getenv('APPNAME'))
-
-        #Set GPG keypair expiry to Never as default
-        self.lblExpires.Selection = 0
-        if (self.lblExpires.Selection == 0): 
-            self.txtTimeQuantity.Enabled = False
-        else:
-
-            self.txtTimeQuantity.Enabled = True
 
     def AppExit(self, event):
         self.Destroy()
@@ -134,45 +112,69 @@ class MainWindow(mainWindow):
         file.close()
         windll.user32.MessageBoxW(0, "File saved successfully", f"{os.getenv('APPNAME')}", 0 ) 
 
-    def radioGPGExpiry_Click( self, event ):
-        if self.lblExpires.Selection == 1: self.txtTimeQuantity.Enabled = True
-        if self.lblExpires.Selection == 0: self.txtTimeQuantity.Enabled = False
-
-    def btnGPGGen_Click( self, event ):
-        expiry = 0 if self.lblExpires.GetSelection() == 0 else self.txtTimeQuantity.Value
-        comment = self.txtComment.Value
-
-        if expiry == EmptyString: expiry = 0
+    def btnKeyGen_Click( self, event ):
+        gen_without_passphrase = False
+        secret = self.txtPassphrase.Value
 
         if self.txtPassphrase.Value != self.txtConfirm.Value: 
             windll.user32.MessageBoxW(0, "Passphrase does not match confirmation", f"{os.getenv('APPNAME')}", 0 ) 
             return
-        if self.txtPassphrase.Value == EmptyString and self.txtConfirm.Value == EmptyString:
-            windll.user32.MessageBoxW(0, "Empty passphrase field", f"{os.getenv('APPNAME')}", 0 )
-            return
-        if self.txtEmail.Value == EmptyString:
-            windll.user32.MessageBoxW(0, "Empty email field", f"{os.getenv('APPNAME')}", 0 )
-            return
-        if self.txtRealName.Value == EmptyString:
-            windll.user32.MessageBoxW(0, "Empty name field", f"{os.getenv('APPNAME')}", 0 )
-            return
-        if comment == EmptyString: comment = f"Generated with GNUPG/{os.getenv('APPNAME')}" 
+        if self.txtPassphrase.Value == EmptyString and self.txtConfirm.Value == EmptyString: 
+            windll.user32.MessageBoxW(0, "Generating key pair without a passphrase", f"{os.getenv('APPNAME')}", 0 ) 
+            gen_without_passphrase = True
 
-        input_data = gpg.gen_key_input(
-            key_type      = self.radioKeyType.GetStringSelection(),
-            key_length    = int(self.radioKeySize.GetStringSelection()),
-            # subkey_type   = "RSA",
-            # subkey_length = int(self.radioKeySize.GetStringSelection()),
-            # subkey_usage  = "encrypt,sign,auth",
-            name_real     = self.txtRealName.Value,
-            name_email    = self.txtEmail.Value,
-            name_comment  = comment,
-            expire_date   = expiry,
-            passphrase    = self.txtPassphrase.Value
-        )
-        print(input_data)
-        return
+        self.btnGenKeyPair.Enabled = False
+        self.btnGenKeyPair.SetLabelText("Please wait...")
+        algo = self.radioKeyType.GetStringSelection()
 
+        key = None
+        if algo=="RSA":
+            key = RSA.generate(
+                bits=int(self.radioKeySize.GetStringSelection()),
+                e=65537
+            )
+        elif algo=="DSA":
+            key = DSA.generate(
+                bits=int(self.radioKeySize.GetStringSelection())
+            )
+
+
+        #Private key
+        enc_private_key = None
+        if gen_without_passphrase == True:
+            if algo=="RSA":
+                enc_private_key = key.export_key(pkcs=1)
+            if algo=="DSA":
+                enc_private_key = key.export_key(pkcs8=False)
+        else:
+            if algo=="RSA":
+                enc_private_key = key.export_key(passphrase=secret, pkcs=1)
+            if algo=="DSA":
+                enc_private_key = key.export_key(passphrase=secret, pkcs8=False)
+
+
+        #Public key
+        public_key  = None
+        if algo=="RSA":
+            public_key  = key.publickey().export_key()
+        if algo=="DSA":
+            public_key  = key.publickey().export_key()
+
+
+        save_file = ''.join(choice(string.ascii_uppercase) for _ in range(16))
+        with open(f"{os.environ['USERPROFILE']}\Desktop\PRVKEY_{algo}_{save_file}", 'wb') as f:
+            f.write(enc_private_key)
+        with open(f"{os.environ['USERPROFILE']}\Desktop\PUBKEY_{algo}_{save_file}.pub", 'wb') as f:
+            f.write(public_key)
+
+        self.btnGenKeyPair.SetLabelText("Generate")
+        self.btnGenKeyPair.Enabled = True
+        windll.user32.MessageBoxW(0, 
+        f"The following files were generated:\n{os.environ['USERPROFILE']}\Desktop\PRVKEY_{algo}_{save_file}\n{os.environ['USERPROFILE']}\Desktop\PUBKEY_{algo}_{save_file}.pub", 
+        f"Success", 
+        0) 
+
+        
 class DLGAbout(dlgAbout):
     def __init__(self, parent):
         super().__init__(parent)

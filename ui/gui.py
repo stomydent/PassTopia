@@ -18,7 +18,7 @@ import wx.aui
 class mainWindow ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"APPNAME", pos = wx.DefaultPosition, size = wx.Size( 887,600 ), style = wx.DEFAULT_FRAME_STYLE )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"APPNAME", pos = wx.DefaultPosition, size = wx.Size( 880,600 ), style = wx.DEFAULT_FRAME_STYLE )
 
 		self.SetSizeHints( wx.Size( 800,600 ), wx.DefaultSize )
 
@@ -125,7 +125,7 @@ class mainWindow ( wx.Frame ):
 		self.pPassword.SetSizer( flexGridPassword )
 		self.pPassword.Layout()
 		flexGridPassword.Fit( self.pPassword )
-		self.m_auinotebook.AddPage( self.pPassword, u"Password", False, wx.Bitmap( u"ui/icons/password.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook.AddPage( self.pPassword, u"Password", True, wx.Bitmap( u"ui/icons/password.png", wx.BITMAP_TYPE_ANY ) )
 		self.pCertificate = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		flexGridCertificate = wx.FlexGridSizer( 10, 5, 5, 20 )
 		flexGridCertificate.AddGrowableCol( 1 )
@@ -141,64 +141,25 @@ class mainWindow ( wx.Frame ):
 
 		bSizer9 = wx.BoxSizer( wx.VERTICAL )
 
+
+		bSizer9.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
 		bSizer10 = wx.BoxSizer( wx.HORIZONTAL )
 
-		radioKeyTypeChoices = [ u"RSA", u"DSA", u"ELG", u"ECC", u"EDDSA", u"ECDH", u"ECDSA", u"ECDH" ]
-		self.radioKeyType = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Key Type", wx.DefaultPosition, wx.DefaultSize, radioKeyTypeChoices, 4, wx.RA_SPECIFY_COLS )
+		radioKeyTypeChoices = [ u"RSA", u"DSA" ]
+		self.radioKeyType = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Key Type", wx.DefaultPosition, wx.DefaultSize, radioKeyTypeChoices, 1, wx.RA_SPECIFY_ROWS )
 		self.radioKeyType.SetSelection( 0 )
-		bSizer10.Add( self.radioKeyType, 1, wx.EXPAND, 5 )
+		bSizer10.Add( self.radioKeyType, 0, wx.EXPAND, 5 )
 
 		radioKeySizeChoices = [ u"1024", u"2048", u"3072", u"4096" ]
-		self.radioKeySize = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Key Size", wx.DefaultPosition, wx.DefaultSize, radioKeySizeChoices, 2, wx.RA_SPECIFY_COLS )
-		self.radioKeySize.SetSelection( 3 )
-		bSizer10.Add( self.radioKeySize, 1, wx.EXPAND, 5 )
+		self.radioKeySize = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Key Size", wx.DefaultPosition, wx.DefaultSize, radioKeySizeChoices, 1, wx.RA_SPECIFY_ROWS|wx.FULL_REPAINT_ON_RESIZE )
+		self.radioKeySize.SetSelection( 1 )
+		bSizer10.Add( self.radioKeySize, 5, wx.SHAPED, 10 )
 
 
-		bSizer9.Add( bSizer10, 1, wx.EXPAND, 5 )
+		bSizer9.Add( bSizer10, 0, wx.EXPAND, 5 )
 
-		lblRealName = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Real name" ), wx.VERTICAL )
-
-		self.txtRealName = wx.TextCtrl( lblRealName.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblRealName.Add( self.txtRealName, 0, wx.ALL|wx.EXPAND, 5 )
-
-
-		bSizer9.Add( lblRealName, 1, wx.EXPAND, 5 )
-
-		lblEmail = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Email address" ), wx.VERTICAL )
-
-		self.txtEmail = wx.TextCtrl( lblEmail.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblEmail.Add( self.txtEmail, 0, wx.ALL|wx.EXPAND, 5 )
-
-
-		bSizer9.Add( lblEmail, 1, wx.EXPAND, 5 )
-
-		bSizer11 = wx.BoxSizer( wx.HORIZONTAL )
-
-		lblExpiresChoices = [ u"Never", u"Custom" ]
-		self.lblExpires = wx.RadioBox( self.pCertificate, wx.ID_ANY, u"Expires", wx.DefaultPosition, wx.DefaultSize, lblExpiresChoices, 1, wx.RA_SPECIFY_COLS )
-		self.lblExpires.SetSelection( 0 )
-		bSizer11.Add( self.lblExpires, 2, wx.EXPAND, 5 )
-
-		lblCustomExpires = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Custom expiry string" ), wx.VERTICAL )
-
-		self.txtTimeQuantity = wx.TextCtrl( lblCustomExpires.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblCustomExpires.Add( self.txtTimeQuantity, 0, wx.ALL|wx.EXPAND, 5 )
-
-
-		bSizer11.Add( lblCustomExpires, 2, wx.EXPAND, 5 )
-
-
-		bSizer9.Add( bSizer11, 1, wx.EXPAND, 5 )
-
-		lblComment = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Comment" ), wx.VERTICAL )
-
-		self.txtComment = wx.TextCtrl( lblComment.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblComment.Add( self.txtComment, 0, wx.ALL|wx.EXPAND, 5 )
-
-
-		bSizer9.Add( lblComment, 1, wx.EXPAND, 5 )
-
-		lblPass = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Passphrase" ), wx.HORIZONTAL )
+		lblPass = wx.StaticBoxSizer( wx.StaticBox( self.pCertificate, wx.ID_ANY, u"Passphrase" ), wx.VERTICAL )
 
 		self.lblPassphrase = wx.StaticText( lblPass.GetStaticBox(), wx.ID_ANY, u"Passphrase", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lblPassphrase.Wrap( -1 )
@@ -206,7 +167,7 @@ class mainWindow ( wx.Frame ):
 		lblPass.Add( self.lblPassphrase, 0, wx.ALL, 5 )
 
 		self.txtPassphrase = wx.TextCtrl( lblPass.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblPass.Add( self.txtPassphrase, 2, 0, 5 )
+		lblPass.Add( self.txtPassphrase, 2, wx.EXPAND, 5 )
 
 		self.lblConfirm = wx.StaticText( lblPass.GetStaticBox(), wx.ID_ANY, u"Confirm", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lblConfirm.Wrap( -1 )
@@ -214,16 +175,16 @@ class mainWindow ( wx.Frame ):
 		lblPass.Add( self.lblConfirm, 0, wx.ALL, 5 )
 
 		self.txtConfirm = wx.TextCtrl( lblPass.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		lblPass.Add( self.txtConfirm, 2, 0, 5 )
+		lblPass.Add( self.txtConfirm, 2, wx.EXPAND, 5 )
 
 
-		bSizer9.Add( lblPass, 1, wx.EXPAND, 5 )
+		bSizer9.Add( lblPass, 0, wx.EXPAND, 5 )
+
+
+		bSizer9.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
 
 		flexGridCertificate.Add( bSizer9, 10, wx.ALL|wx.EXPAND, 5 )
-
-
-		flexGridCertificate.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		bSizer14 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -256,7 +217,7 @@ class mainWindow ( wx.Frame ):
 		self.pCertificate.SetSizer( flexGridCertificate )
 		self.pCertificate.Layout()
 		flexGridCertificate.Fit( self.pCertificate )
-		self.m_auinotebook.AddPage( self.pCertificate, u"GPG Keypair", True, wx.Bitmap( u"ui/icons/keys.png", wx.BITMAP_TYPE_ANY ) )
+		self.m_auinotebook.AddPage( self.pCertificate, u"PK Cryptography", False, wx.Bitmap( u"ui/icons/keys.png", wx.BITMAP_TYPE_ANY ) )
 		self.pWallet = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		bSizer8 = wx.BoxSizer( wx.VERTICAL )
 
@@ -371,8 +332,7 @@ class mainWindow ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.AppExit, id = self.mQuit.GetId() )
 		self.Bind( wx.EVT_MENU, self.AppAbout, id = self.mAbout.GetId() )
 		self.btnGenPass.Bind( wx.EVT_BUTTON, self.btnGenPass_Click )
-		self.lblExpires.Bind( wx.EVT_RADIOBOX, self.radioGPGExpiry_Click )
-		self.btnGenKeyPair.Bind( wx.EVT_BUTTON, self.btnGPGGen_Click )
+		self.btnGenKeyPair.Bind( wx.EVT_BUTTON, self.btnKeyGen_Click )
 		self.btnGenBTC.Bind( wx.EVT_BUTTON, self.btnBTCGen_Click )
 		self.btnBTCSave.Bind( wx.EVT_BUTTON, self.btnBTCSave_Click )
 		self.btnGenETH.Bind( wx.EVT_BUTTON, self.btnETHGen_Click )
@@ -392,10 +352,7 @@ class mainWindow ( wx.Frame ):
 	def btnGenPass_Click( self, event ):
 		pass
 
-	def radioGPGExpiry_Click( self, event ):
-		pass
-
-	def btnGPGGen_Click( self, event ):
+	def btnKeyGen_Click( self, event ):
 		pass
 
 	def btnBTCGen_Click( self, event ):
