@@ -3,6 +3,7 @@
 *.bak
 *.spec
 *.fbp
+*.fbp.bak
 *.exe
 /lib/__pycache__
 /ui/__pycache__
