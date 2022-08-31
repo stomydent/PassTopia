@@ -1,3 +1,5 @@
+from cmath import log
+import random
 from dotenv            import load_dotenv, main
 from wx.core           import ICON_QUESTION, EmptyString, Font
 from ui.gui            import mainWindow,dlgAbout
@@ -5,7 +7,7 @@ from ctypes            import windll
 from secrets           import choice,randbits
 from sys               import platform
 from Crypto.PublicKey  import RSA, DSA, ECC
-import os, wx, string
+import os, wx, string, rstr, ftfy
 import lib.genbtc, lib.geneth
 
 load_dotenv('./config/.env')
@@ -30,6 +32,8 @@ class MainWindow(mainWindow):
         icon = wx.Icon(f"{os.getcwd()}{os.getenv('APPICON')}", wx.BITMAP_TYPE_PNG)
         self.SetIcon(icon)
         self.SetTitle(os.getenv('APPNAME'))
+        
+        self.passphrase_lang = ""
 
     def AppExit(self, event):
         self.Destroy()
@@ -40,6 +44,7 @@ class MainWindow(mainWindow):
     def btnGenPass_Click( self, event ):
         #Get generation boundaries
         dict = ""
+        pattern = self.txtPattern.Value
         passLength = self.slideLength.GetValue()
         passCount  = self.slideCount.GetValue()
 
@@ -52,17 +57,27 @@ class MainWindow(mainWindow):
             dict += string.digits
         if self.chkAlphabetSpecial.IsChecked()==True:
             dict += string.punctuation
-        if        not dict: windll.user32.MessageBoxW(0, "Dictionary cannot be empty", f"{os.getenv('APPNAME')}", 0 )
-        if passLength <= 0: windll.user32.MessageBoxW(0, f"Password length cannot be <= {passLength}", f"{os.getenv('APPNAME')}", 0 )
-        if passLength >100: windll.user32.MessageBoxW(0, f"Password length cannot be  > {passLength}", f"{os.getenv('APPNAME')}", 0 )
-        if passCount  <= 0: windll.user32.MessageBoxW(0, f"Password  count cannot be <= {passCount}", f"{os.getenv('APPNAME')}", 0 ) 
-        if passCount   >50: windll.user32.MessageBoxW(0, f"Password  count cannot be  > {passCount}", f"{os.getenv('APPNAME')}", 0 ) 
+        if  not dict: windll.user32.MessageBoxW(0, "Dictionary cannot be empty", f"{os.getenv('APPNAME')}", 0 )
+        
+        if passLength <= 0:  windll.user32.MessageBoxW(0, f"Password length cannot be <= {passLength}", f"{os.getenv('APPNAME')}", 0 )
+        if passLength >1000: windll.user32.MessageBoxW(0, f"Password length cannot be  > {passLength}", f"{os.getenv('APPNAME')}", 0 )
+        if passCount  <= 0:  windll.user32.MessageBoxW(0, f"Password  count cannot be <= {passCount}", f"{os.getenv('APPNAME')}", 0 ) 
+        if passCount   >50:  windll.user32.MessageBoxW(0, f"Password  count cannot be  > {passCount}", f"{os.getenv('APPNAME')}", 0 ) 
 
         #Generation
         passBuffer = []
-        for i in range(passCount): passBuffer.append(''.join([choice(dict) for _ in range(passLength)]))
-        self.m_textCtrl1.SetFont(Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, underline=False, faceName="Terminal", encoding=wx.FONTENCODING_DEFAULT))
+
+        if pattern != ".*":
+            for i in range(passCount): passBuffer.append(rstr.xeger(pattern))
+        else:
+            for i in range(passCount): passBuffer.append(''.join([choice(dict) for _ in range(passLength)]))
+
+        self.m_textCtrl1.SetFont(Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, underline=False, faceName="sans-serif", encoding=wx.FONTENCODING_DEFAULT))
         self.m_textCtrl1.Value = '\n'.join(passBuffer)
+
+    def btnResetPattern_Click(self, event):
+         self.txtPattern.Value = ".*"
+         pattern = self.txtPattern.Value
 
     def btnBTCGen_Click( self, event ):
         bits = randbits(256)
@@ -174,7 +189,23 @@ class MainWindow(mainWindow):
         f"Success", 
         0) 
 
-        
+    def dictChooser_Change(self, event):
+        self.passphrase_lang = self.dictChooser.GetString(self.dictChooser.GetCurrentSelection())
+
+    def btnGenPassphrase_Click(self, event):
+        if self.passphrase_lang == "": self.passphrase_lang = self.dictChooser.GetString(self.dictChooser.GetCurrentSelection())
+        wordCount = self.slideLengthPassphrase.GetValue()
+
+        passBuffer = []
+        with open(f"./res/{str.lower(self.passphrase_lang)}-words.txt", 'r') as f:
+            lines      = f.readlines()
+            passBuffer = list(map(lambda x: str.replace(x,'\n',' '), random.sample(lines,k=wordCount)))
+            f.close()
+
+        passBuffer[-1] = str.replace(passBuffer.pop(), ' ', '')
+        self.txtGenPassphrase.SetFont(Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, underline=False, faceName="sans-serif", encoding=wx.FONTENCODING_DEFAULT))
+        self.txtGenPassphrase.Value = ftfy.fix_encoding(''.join(passBuffer))
+
 class DLGAbout(dlgAbout):
     def __init__(self, parent):
         super().__init__(parent)

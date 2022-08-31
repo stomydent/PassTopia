@@ -46,7 +46,6 @@ class mainWindow ( wx.Frame ):
 		self.pPassword = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		flexGridPassword = wx.FlexGridSizer( 6, 1, 0, 0 )
 		flexGridPassword.AddGrowableCol( 0 )
-		flexGridPassword.AddGrowableRow( 1 )
 		flexGridPassword.AddGrowableRow( 2 )
 		flexGridPassword.AddGrowableRow( 3 )
 		flexGridPassword.AddGrowableRow( 4 )
@@ -82,7 +81,7 @@ class mainWindow ( wx.Frame ):
 
 		lblLength = wx.StaticBoxSizer( wx.StaticBox( self.pPassword, wx.ID_ANY, u"Length" ), wx.VERTICAL )
 
-		self.slideLength = wx.Slider( lblLength.GetStaticBox(), wx.ID_ANY, 10, 1, 100, wx.DefaultPosition, wx.DefaultSize, wx.SL_BOTH|wx.SL_HORIZONTAL|wx.SL_LABELS )
+		self.slideLength = wx.Slider( lblLength.GetStaticBox(), wx.ID_ANY, 10, 1, 1000, wx.DefaultPosition, wx.DefaultSize, wx.SL_BOTH|wx.SL_HORIZONTAL|wx.SL_LABELS )
 		lblLength.Add( self.slideLength, 0, wx.ALL|wx.EXPAND, 5 )
 
 
@@ -106,26 +105,103 @@ class mainWindow ( wx.Frame ):
 		bSizer7.Add( self.btnGenPass, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 
-		flexGridPassword.Add( bSizer7, 5, wx.ALL|wx.EXPAND, 5 )
+		flexGridPassword.Add( bSizer7, 1, wx.ALL|wx.EXPAND, 5 )
+
+		bSizer17 = wx.BoxSizer( wx.VERTICAL )
+
+		sbSizer13 = wx.StaticBoxSizer( wx.StaticBox( self.pPassword, wx.ID_ANY, u"Pattern (regex)" ), wx.HORIZONTAL )
+
+		self.txtPattern = wx.TextCtrl( sbSizer13.GetStaticBox(), wx.ID_ANY, u".*", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer13.Add( self.txtPattern, 10, wx.ALL|wx.EXPAND, 5 )
+
+		self.btnResetPattern = wx.Button( sbSizer13.GetStaticBox(), wx.ID_ANY, u"Reset", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer13.Add( self.btnResetPattern, 1, wx.ALL, 5 )
+
+
+		bSizer17.Add( sbSizer13, 10, wx.EXPAND, 5 )
+
+
+		flexGridPassword.Add( bSizer17, 1, wx.ALL|wx.EXPAND, 5 )
 
 		bSizer71 = wx.BoxSizer( wx.VERTICAL )
 
 		sbSizer7 = wx.StaticBoxSizer( wx.StaticBox( self.pPassword, wx.ID_ANY, u"Password" ), wx.VERTICAL )
 
 		self.m_textCtrl1 = wx.TextCtrl( sbSizer7.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.BORDER_SIMPLE )
-		sbSizer7.Add( self.m_textCtrl1, 1, wx.EXPAND, 5 )
+		sbSizer7.Add( self.m_textCtrl1, 5, wx.EXPAND, 5 )
 
 
 		bSizer71.Add( sbSizer7, 1, wx.EXPAND, 5 )
 
 
-		flexGridPassword.Add( bSizer71, 10, wx.ALL|wx.EXPAND, 5 )
+		flexGridPassword.Add( bSizer71, 20, wx.ALL|wx.EXPAND, 5 )
 
 
 		self.pPassword.SetSizer( flexGridPassword )
 		self.pPassword.Layout()
 		flexGridPassword.Fit( self.pPassword )
 		self.m_auinotebook.AddPage( self.pPassword, u"Password", True, wx.Bitmap( u"ui/icons/password.png", wx.BITMAP_TYPE_ANY ) )
+		self.pPassphrase = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
+		flexGridPassphrase = wx.FlexGridSizer( 6, 1, 0, 0 )
+		flexGridPassphrase.AddGrowableCol( 0 )
+		flexGridPassphrase.AddGrowableRow( 1 )
+		flexGridPassphrase.AddGrowableRow( 2 )
+		flexGridPassphrase.AddGrowableRow( 3 )
+		flexGridPassphrase.AddGrowableRow( 4 )
+		flexGridPassphrase.AddGrowableRow( 5 )
+		flexGridPassphrase.SetFlexibleDirection( wx.BOTH )
+		flexGridPassphrase.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		bSizer72 = wx.BoxSizer( wx.HORIZONTAL )
+
+		lbPassphrase = wx.StaticBoxSizer( wx.StaticBox( self.pPassphrase, wx.ID_ANY, u"Dictionary" ), wx.HORIZONTAL )
+
+		dictChooserChoices = [ u"English", u"French", u"German" ]
+		self.dictChooser = wx.Choice( lbPassphrase.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, dictChooserChoices, 0 )
+		self.dictChooser.SetSelection( 0 )
+		lbPassphrase.Add( self.dictChooser, 10, wx.ALL, 5 )
+
+
+		bSizer72.Add( lbPassphrase, 5, wx.EXPAND, 5 )
+
+
+		bSizer72.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
+		lblLength1 = wx.StaticBoxSizer( wx.StaticBox( self.pPassphrase, wx.ID_ANY, u"Length" ), wx.VERTICAL )
+
+		self.slideLengthPassphrase = wx.Slider( lblLength1.GetStaticBox(), wx.ID_ANY, 30, 1, 100, wx.DefaultPosition, wx.DefaultSize, wx.SL_BOTH|wx.SL_HORIZONTAL|wx.SL_LABELS )
+		lblLength1.Add( self.slideLengthPassphrase, 0, wx.ALL|wx.EXPAND, 5 )
+
+
+		bSizer72.Add( lblLength1, 5, wx.EXPAND, 5 )
+
+
+		bSizer72.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
+		self.btnGenPassphrase = wx.Button( self.pPassphrase, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer72.Add( self.btnGenPassphrase, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+
+		flexGridPassphrase.Add( bSizer72, 5, wx.ALL|wx.EXPAND, 5 )
+
+		bSizer711 = wx.BoxSizer( wx.VERTICAL )
+
+		sbSizer71 = wx.StaticBoxSizer( wx.StaticBox( self.pPassphrase, wx.ID_ANY, u"Password" ), wx.VERTICAL )
+
+		self.txtGenPassphrase = wx.TextCtrl( sbSizer71.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.BORDER_SIMPLE )
+		sbSizer71.Add( self.txtGenPassphrase, 1, wx.EXPAND, 5 )
+
+
+		bSizer711.Add( sbSizer71, 1, wx.EXPAND, 5 )
+
+
+		flexGridPassphrase.Add( bSizer711, 10, wx.ALL|wx.EXPAND, 5 )
+
+
+		self.pPassphrase.SetSizer( flexGridPassphrase )
+		self.pPassphrase.Layout()
+		flexGridPassphrase.Fit( self.pPassphrase )
+		self.m_auinotebook.AddPage( self.pPassphrase, u"Passphrase", False, wx.Bitmap( u"ui/icons/open-book.png", wx.BITMAP_TYPE_ANY ) )
 		self.pCertificate = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		flexGridCertificate = wx.FlexGridSizer( 10, 5, 5, 20 )
 		flexGridCertificate.AddGrowableCol( 1 )
@@ -332,6 +408,9 @@ class mainWindow ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.AppExit, id = self.mQuit.GetId() )
 		self.Bind( wx.EVT_MENU, self.AppAbout, id = self.mAbout.GetId() )
 		self.btnGenPass.Bind( wx.EVT_BUTTON, self.btnGenPass_Click )
+		self.btnResetPattern.Bind( wx.EVT_BUTTON, self.btnResetPattern_Click )
+		self.dictChooser.Bind( wx.EVT_CHOICE, self.dictChooser_Change )
+		self.btnGenPassphrase.Bind( wx.EVT_BUTTON, self.btnGenPassphrase_Click )
 		self.btnGenKeyPair.Bind( wx.EVT_BUTTON, self.btnKeyGen_Click )
 		self.btnGenBTC.Bind( wx.EVT_BUTTON, self.btnBTCGen_Click )
 		self.btnBTCSave.Bind( wx.EVT_BUTTON, self.btnBTCSave_Click )
@@ -350,6 +429,15 @@ class mainWindow ( wx.Frame ):
 		pass
 
 	def btnGenPass_Click( self, event ):
+		pass
+
+	def btnResetPattern_Click( self, event ):
+		pass
+
+	def dictChooser_Change( self, event ):
+		pass
+
+	def btnGenPassphrase_Click( self, event ):
 		pass
 
 	def btnKeyGen_Click( self, event ):
