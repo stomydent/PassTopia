@@ -1,12 +1,18 @@
 from cmath import log
 import random
-from dotenv            import load_dotenv, main
-from wx.core           import ICON_QUESTION, EmptyString, Font
-from ui.gui            import mainWindow,dlgAbout
-from ctypes            import windll
-from secrets           import choice,randbits
-from sys               import platform
-from Crypto.PublicKey  import RSA, DSA, ECC
+from dotenv             import load_dotenv, main
+from wx.core            import ICON_QUESTION, EmptyString, Font
+from ui.gui             import mainWindow,dlgAbout
+from ctypes             import windll
+from secrets            import choice,randbits
+from sys                import platform
+from Crypto.PublicKey   import RSA, DSA, ECC
+from Crypto.Hash        import SHA1, SHA256, SHA512, SHA3_256, SHA3_512, MD5
+from fastcrc            import crc32, crc64
+
+from tkinter            import Tk
+from tkinter.filedialog import askopenfilename
+
 import os, wx, string, rstr, ftfy
 import lib.genbtc, lib.geneth
 
@@ -34,6 +40,7 @@ class MainWindow(mainWindow):
         self.SetTitle(os.getenv('APPNAME'))
         
         self.passphrase_lang = ""
+        self.hash_this_file  = None
 
     def AppExit(self, event):
         self.Destroy()
@@ -205,6 +212,86 @@ class MainWindow(mainWindow):
         passBuffer[-1] = str.replace(passBuffer.pop(), ' ', '')
         self.txtGenPassphrase.SetFont(Font(10, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, underline=False, faceName="sans-serif", encoding=wx.FONTENCODING_DEFAULT))
         self.txtGenPassphrase.Value = ftfy.fix_encoding(''.join(passBuffer))
+
+    def btnBrowseFileForHashing_Click(self, event):
+        Tk().withdraw()
+        select_file = askopenfilename()
+        if(select_file == ""): return None
+        self.hash_this_file = select_file
+        select_file = os.path.basename(select_file)
+        if(len(select_file) >= 75): select_file = '...'+select_file[65:] 
+        self.lblSelectedFile.SetLabelText(select_file)
+
+    def btnHashToFile_Click(self, event):
+            def saveFileHash(h):
+                if(self.hash_this_file == None): return None
+                fo = 'w+'
+                fn  = os.path.basename(self.hash_this_file)
+                with open(self.hash_this_file, 'rb') as f:
+                    data    = f.read()   
+                    with open(os.path.realpath(self.hash_this_file) + f'.{h}', fo) as s:
+                        if(h == 'md5'):       s.write(str.upper(MD5.new(data=data).hexdigest()) + "  MD5")
+                        if(h == 'crc32'):     s.write(str.upper(str(hex(crc32.iso_hdlc(data)))[2:]) + "  CRC32")
+                        if(h == 'crc64'):     s.write(str.upper((hex(crc64.xz(data)))[2:]) + "  CRC64")
+                        if(h == 'sha1'):      s.write(str.upper(SHA1.new(data=data).hexdigest()) + "  SHA1")
+                        if(h == 'sha256'):    s.write(str.upper(SHA256.new(data=data).hexdigest()) + "  SHA256")
+                        if(h == 'sha512'):    s.write(str.upper(SHA512.new(data=data).hexdigest()) + "  SHA512")
+                        if(h == 'sha3-256'):  s.write(str.upper(SHA3_256.new(data=data).hexdigest()) + "  SHA3-256")
+                        if(h == 'sha3-512'):  s.write(str.upper(SHA3_512.new(data=data).hexdigest()) + "  SHA3-512")
+            saved = ""
+            if(self.chkMD5.IsChecked() == True):    
+                saveFileHash('md5')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.md5'
+            if(self.chkCRC32.IsChecked() == True):  
+                saveFileHash('crc32')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.crc32'
+            if(self.chkCRC64.IsChecked() == True):  
+                saveFileHash('crc64')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.crc64'
+            if(self.chkSHA1.IsChecked() == True):   
+                saveFileHash('sha1')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.sha1' 
+            if(self.chkSHA256.IsChecked() == True): 
+                saveFileHash('sha256')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.sha256'          
+            if(self.chkSHA512.IsChecked() == True): 
+                saveFileHash('sha512')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.sha512'
+            if(self.chkSHA3256.IsChecked() == True):
+                saveFileHash('sha3-256')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.sha3-256'
+            if(self.chkSHA3512.IsChecked() == True):
+                saveFileHash('sha3-512')
+                saved += f'\n{os.path.abspath(self.hash_this_file)}.sha3-512'   
+            windll.user32.MessageBoxW(0, 
+            f"Generated:\n{saved}", 
+            f"Success", 
+            0)      
+
+    def btnGenHash_Click(self, event):
+        self.txtHashOutput.Value = ""
+        if(self.hash_this_file is None):
+            return None
+        with open(self.hash_this_file, 'rb') as f:
+            data    = f.read()
+            self.txtHashOutput.Value += f'---------------------------------------------------------'
+            if(self.chkMD5.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nMD5:      '+ str.upper(MD5.new(data=data).hexdigest())
+            if(self.chkCRC32.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nCRC32:    '+ str.upper(str(hex(crc32.iso_hdlc(data)))[2:])
+            if(self.chkCRC64.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nCRC64:    '+ str.upper((hex(crc64.xz(data)))[2:])
+            if(self.chkSHA1.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nSHA-1:    '+ str.upper(SHA1.new(data=data).hexdigest())
+            if(self.chkSHA256.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nSHA-256:  '+ str.upper(SHA256.new(data=data).hexdigest())
+            if(self.chkSHA512.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nSHA-512:  '+ str.upper(SHA512.new(data=data).hexdigest())
+            if(self.chkSHA3256.IsChecked() == True):
+                self.txtHashOutput.Value += f'\nSHA3-256: '+ str.upper(SHA3_256.new(data=data).hexdigest())
+            if(self.chkSHA3512.IsChecked() == True):        
+                self.txtHashOutput.Value += f'\nSHA3-512: '+ str.upper(SHA3_512.new(data=data).hexdigest())
+            self.txtHashOutput.Value += f'---------------------------------------------------------'
 
 class DLGAbout(dlgAbout):
     def __init__(self, parent):

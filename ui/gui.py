@@ -202,6 +202,103 @@ class mainWindow ( wx.Frame ):
 		self.pPassphrase.Layout()
 		flexGridPassphrase.Fit( self.pPassphrase )
 		self.m_auinotebook.AddPage( self.pPassphrase, u"Passphrase", False, wx.Bitmap( u"ui/icons/open-book.png", wx.BITMAP_TYPE_ANY ) )
+		self.pHashing = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer23 = wx.BoxSizer( wx.HORIZONTAL )
+
+		bSizer24 = wx.BoxSizer( wx.VERTICAL )
+
+		sbSizer15 = wx.StaticBoxSizer( wx.StaticBox( self.pHashing, wx.ID_ANY, u"Algorithm" ), wx.HORIZONTAL )
+
+		self.chkMD5 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"MD5", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkMD5, 0, wx.ALL, 5 )
+
+		self.chkCRC32 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"CRC32", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkCRC32, 0, wx.ALL, 5 )
+
+		self.chkCRC64 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"CRC64", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkCRC64, 0, wx.ALL, 5 )
+
+		self.chkSHA1 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"SHA-1", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkSHA1, 0, wx.ALL, 5 )
+
+		self.chkSHA256 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"SHA-256", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.chkSHA256.SetValue(True)
+		sbSizer15.Add( self.chkSHA256, 0, wx.ALL, 5 )
+
+		self.chkSHA512 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"SHA-512", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkSHA512, 0, wx.ALL, 5 )
+
+		self.chkSHA3256 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"SHA3-256", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkSHA3256, 0, wx.ALL, 5 )
+
+		self.chkSHA3512 = wx.CheckBox( sbSizer15.GetStaticBox(), wx.ID_ANY, u"SHA3-512", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer15.Add( self.chkSHA3512, 0, wx.ALL, 5 )
+
+
+		bSizer24.Add( sbSizer15, 1, wx.EXPAND, 5 )
+
+		sbSizer18 = wx.StaticBoxSizer( wx.StaticBox( self.pHashing, wx.ID_ANY, u"File" ), wx.VERTICAL )
+
+		self.lblSelectFile = wx.StaticText( sbSizer18.GetStaticBox(), wx.ID_ANY, u"Select File", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.lblSelectFile.Wrap( -1 )
+
+		sbSizer18.Add( self.lblSelectFile, 0, wx.ALL|wx.EXPAND, 5 )
+
+		self.btnBrowseForHashing = wx.Button( sbSizer18.GetStaticBox(), wx.ID_ANY, u"Browse...", wx.DefaultPosition, wx.DefaultSize, 0 )
+
+		self.btnBrowseForHashing.SetBitmap( wx.Bitmap( u"ui/icons/magnifier.png", wx.BITMAP_TYPE_ANY ) )
+		sbSizer18.Add( self.btnBrowseForHashing, 0, wx.ALL, 5 )
+
+		self.lblSelectedFile = wx.StaticText( sbSizer18.GetStaticBox(), wx.ID_ANY, u"No file selected", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.lblSelectedFile.Wrap( -1 )
+
+		sbSizer18.Add( self.lblSelectedFile, 0, wx.ALL|wx.EXPAND, 5 )
+
+
+		bSizer24.Add( sbSizer18, 1, wx.EXPAND, 5 )
+
+		sbSizer17 = wx.StaticBoxSizer( wx.StaticBox( self.pHashing, wx.ID_ANY, u"Output\n" ), wx.VERTICAL )
+
+		self.txtHashOutput = wx.TextCtrl( sbSizer17.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_DONTWRAP|wx.TE_MULTILINE )
+		self.txtHashOutput.SetFont( wx.Font( 10, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "Courier New" ) )
+
+		sbSizer17.Add( self.txtHashOutput, 1, wx.EXPAND, 0 )
+
+
+		bSizer24.Add( sbSizer17, 9, wx.EXPAND, 5 )
+
+		sbSizer151 = wx.StaticBoxSizer( wx.StaticBox( self.pHashing, wx.ID_ANY, u"Generate" ), wx.HORIZONTAL )
+
+
+		sbSizer151.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
+		self.btnSaveFileHash = wx.Button( sbSizer151.GetStaticBox(), wx.ID_ANY, u"Hash File", wx.DefaultPosition, wx.DefaultSize, 0 )
+
+		self.btnSaveFileHash.SetBitmap( wx.Bitmap( u"ui/icons/filehash.png", wx.BITMAP_TYPE_ANY ) )
+		sbSizer151.Add( self.btnSaveFileHash, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+
+		self.btnGenerateHash = wx.Button( sbSizer151.GetStaticBox(), wx.ID_ANY, u"GenHash", wx.DefaultPosition, wx.DefaultSize, 0 )
+
+		self.btnGenerateHash.SetBitmap( wx.Bitmap( u"ui/icons/hash-generate.png", wx.BITMAP_TYPE_ANY ) )
+		sbSizer151.Add( self.btnGenerateHash, 0, wx.ALL, 5 )
+
+
+		sbSizer151.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
+
+		bSizer24.Add( sbSizer151, 1, wx.ALIGN_CENTER, 5 )
+
+
+		bSizer24.Add( ( 0, 0), 1, wx.EXPAND, 5 )
+
+
+		bSizer23.Add( bSizer24, 1, wx.EXPAND, 5 )
+
+
+		self.pHashing.SetSizer( bSizer23 )
+		self.pHashing.Layout()
+		bSizer23.Fit( self.pHashing )
+		self.m_auinotebook.AddPage( self.pHashing, u"Hashing", False, wx.Bitmap( u"ui/icons/encrypted-data.png", wx.BITMAP_TYPE_ANY ) )
 		self.pCertificate = wx.Panel( self.m_auinotebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		flexGridCertificate = wx.FlexGridSizer( 10, 5, 5, 20 )
 		flexGridCertificate.AddGrowableCol( 1 )
@@ -393,11 +490,6 @@ class mainWindow ( wx.Frame ):
 
 		vSizer.Add( self.m_auinotebook, 1, wx.ALL|wx.EXPAND, 5 )
 
-		bSizer5 = wx.BoxSizer( wx.VERTICAL )
-
-
-		vSizer.Add( bSizer5, 1, wx.EXPAND, 5 )
-
 
 		self.SetSizer( vSizer )
 		self.Layout()
@@ -411,6 +503,9 @@ class mainWindow ( wx.Frame ):
 		self.btnResetPattern.Bind( wx.EVT_BUTTON, self.btnResetPattern_Click )
 		self.dictChooser.Bind( wx.EVT_CHOICE, self.dictChooser_Change )
 		self.btnGenPassphrase.Bind( wx.EVT_BUTTON, self.btnGenPassphrase_Click )
+		self.btnBrowseForHashing.Bind( wx.EVT_BUTTON, self.btnBrowseFileForHashing_Click )
+		self.btnSaveFileHash.Bind( wx.EVT_BUTTON, self.btnHashToFile_Click )
+		self.btnGenerateHash.Bind( wx.EVT_BUTTON, self.btnGenHash_Click )
 		self.btnGenKeyPair.Bind( wx.EVT_BUTTON, self.btnKeyGen_Click )
 		self.btnGenBTC.Bind( wx.EVT_BUTTON, self.btnBTCGen_Click )
 		self.btnBTCSave.Bind( wx.EVT_BUTTON, self.btnBTCSave_Click )
@@ -438,6 +533,15 @@ class mainWindow ( wx.Frame ):
 		pass
 
 	def btnGenPassphrase_Click( self, event ):
+		pass
+
+	def btnBrowseFileForHashing_Click( self, event ):
+		pass
+
+	def btnHashToFile_Click( self, event ):
+		pass
+
+	def btnGenHash_Click( self, event ):
 		pass
 
 	def btnKeyGen_Click( self, event ):
